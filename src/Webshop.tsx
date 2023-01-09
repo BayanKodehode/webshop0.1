@@ -7,7 +7,6 @@ import { Navbar } from "./components/navbar";
 import { CreatePost } from "./components/create-post/create-post";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-
 function Webshop() {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -21,16 +20,15 @@ function Webshop() {
 
   return (
     <div className="h-full p-8 text-slate-800 bg-gradient-to-r from-gray-300 to-indigo-500 ">
-       <Router>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Main />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/createpost" element={<CreatePost />} />
-          </Routes>
-        </Router>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/createpost" element={<CreatePost />} />
+        </Routes>
+      </Router>
       <div className="z-0 fixed right-1 bottom-0 text-xl px-0 rounded-t-3xl text-white bg-gradient-to-r from-indigo-600 to-gray-500">
-     
         {!isOpen && (
           <button
             className=" p-3 px-2 m-5 rounded-l-3xl fixed right-0 bottom-0 bg-gradient-to-r from-indigo-500 to-gray-400"
@@ -52,7 +50,6 @@ function Webshop() {
             </DataProvider>
           </div>
         )}
-        
       </div>
     </div>
   );
