@@ -1,7 +1,8 @@
 import * as React from "react";
 import { Bot } from "./components/bot";
 import { DataProvider } from "./context/DataProvider";
-import { Main } from "./pages/mainPage";
+import { MainPage } from "./pages/mainPage";
+import { CreateProduct } from "./pages/createProduct";
 import { Login } from "./pages/login";
 import { Navbar } from "./components/navbar";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -22,9 +23,9 @@ function Webshop() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Main />} />
+          <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/createpost" element={<CreatePost />} />
+          <Route path="/create" element={<CreateProduct />} />
         </Routes>
       </Router>
       <div className="z-0 fixed right-1 bottom-0 text-xl px-0 rounded-t-3xl text-white bg-gradient-to-r from-indigo-600 to-gray-500">

@@ -1,5 +1,14 @@
 import React from 'react';
-import firebase from 'firebase';
+import {
+  addDoc,
+  getDocs,
+  collection,
+  query,
+  where,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
+import { db } from "../config/firebase";
 
 const Comments = ({ product }) => {
   const [comments, setComments] = React.useState(product.comments || []);
@@ -12,7 +21,7 @@ const Comments = ({ product }) => {
   const handleSubmit = event => {
     event.preventDefault();
     setComments([...comments, newComment]);
-    firebase.firestore().collection('products').doc(product.id).update({ comments: [...comments, newComment] });
+    collection(db, 'products').doc(product.id).update({ comments: [...comments, newComment] });
     setNewComment('');
   };
 
