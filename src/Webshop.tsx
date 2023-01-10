@@ -4,7 +4,6 @@ import { DataProvider } from "./context/DataProvider";
 import { Main } from "./pages/mainPage";
 import { Login } from "./pages/login";
 import { Navbar } from "./components/navbar";
-import { CreatePost } from "./components/create-post/create-post";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function Webshop() {
