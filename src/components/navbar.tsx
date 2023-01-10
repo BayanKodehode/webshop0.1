@@ -10,8 +10,8 @@ export const Navbar = () => {
     await signOut(auth);
   };
   return (
-    <div className="navbar">
-      <div className="links">
+    <div className="w-auto h-10 flex justify-end items-center">
+      <div className=" m-auto">
         <Link to="/"> Home </Link>
         {!user ? (
           <Link to="/login"> Login </Link>
