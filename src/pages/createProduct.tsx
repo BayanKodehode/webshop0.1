@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 interface CreateFormData {
   name: string;
   description: string;
+  price: number;
 }
 
 export const CreateProduct = () => {
@@ -18,6 +19,7 @@ export const CreateProduct = () => {
   const schema = yup.object().shape({
     name: yup.string().required("You must add a name to the new product."),
     description: yup.string().required("You must add a description."),
+    price: yup.number().required("What is the price of the new product?"),
   });
 
   const {
@@ -46,6 +48,8 @@ export const CreateProduct = () => {
       <p style={{ color: "red" }}> {errors.name?.message}</p>
       <textarea placeholder="Description..." {...register("description")} />
       <p style={{ color: "red" }}> {errors.description?.message}</p>
+      <input type="number" placeholder="Price..." {...register("price")} />
+      <p style={{ color: "red" }}> {errors.price?.message}</p>
       <input type="submit" className="submitForm" />
     </form>
   );
