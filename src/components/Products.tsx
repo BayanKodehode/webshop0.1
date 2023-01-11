@@ -10,8 +10,6 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-
-// Components
 import { Product as IProduct } from "../pages/mainPage";
 
 interface ProductProps {
