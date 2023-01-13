@@ -4,18 +4,9 @@ import { ShoppingCart } from "../components/ShoppingCart";
 import { getDocs, collection } from "firebase/firestore";
 import { db } from "../config/firebase";
 
-export interface Product {
-  id: string;
-  userId: string;
-  name: string;
-  username: string;
-  description: string;
-  price: number;
-}
 
 export const MainPage = () => {
-
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<[]>([]);
 
   useEffect(() => {
     const productsRef = collection(db, "products");
@@ -27,7 +18,6 @@ export const MainPage = () => {
       setProducts(products);
     });
   }, []);
-
   
   return (
     <div >

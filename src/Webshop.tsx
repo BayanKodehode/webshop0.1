@@ -19,7 +19,7 @@ function Webshop() {
   };
 
   return (
-    <div className="h-full p-8 text-slate-800 bg-gradient-to-r from-gray-300 to-indigo-500 ">
+    <div className="h-full p-8 text-slate-800 overflow-y-auto custom-scrollbar bg-gradient-to-r from-gray-300 to-indigo-500 ">
       <Router>
         <Navbar />
         <Routes>

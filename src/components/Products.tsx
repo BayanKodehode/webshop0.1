@@ -11,20 +11,6 @@ import {
 import { db, auth } from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-export interface ProductProps {
-  product: IProduct;
-}
-
-interface CartItem {
-  userId: string;
-  productId: string;
-}
-
-interface Like {
-  likeId: string;
-  userId: string;
-}
-
 interface IProduct {
   id: string;
   name: string;
@@ -33,32 +19,39 @@ interface IProduct {
   price: number;
 }
 
+interface ProductProps {
+  product: IProduct;
+}
+
+interface Like {
+  likeId: string;
+  userId: string;
+}
+
 export const Products = (productProps: ProductProps) => {
   const { product } = productProps;
   const [user] = useAuthState(auth);
-  const [cart, setCartProduct] = useState<CartItem[] | null>(null);
-
+  const [cart, setCartProduct] = useState<[] | null>(null);
   const cartRef = collection(db, "cart");
   const cartDoc = query(cartRef, where("productId", "==", product.id));
-  
+
   const addProductToCart = async () => {
     try {
-        const newCartDoc = await addDoc(cartRef,{
-            userId: user?.uid,
-            productId: product.id
-        });
-        if (user) {
-            setCartProduct((prev) =>
-              prev
-                ? [...prev, { userId: user.uid, productId: product.id}]
-                : [{ userId: user.uid, productId: product.id}]
-            );
-        }
+      const newCartDoc = await addDoc(cartRef, {
+        userId: user?.uid,
+        productId: product.id,
+      });
+      if (user) {
+        setCartProduct((prev) =>
+          prev
+            ? [...prev, { userId: user.uid, productId: product.id }]
+            : [{ userId: user.uid, productId: product.id }]
+        );
+      }
     } catch (error) {
       console.log(error);
     }
-};
-
+  };
 
   // likes
   const [likes, setLikes] = useState<Like[] | null>(null);

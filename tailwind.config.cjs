@@ -8,7 +8,13 @@ module.exports = {
         display: ["Prosto One", ...defaultTheme.fontFamily.sans],
         chatFont: ["Raleway", ...defaultTheme.fontFamily.sans],
       },
+      transition: {
+        "transform": "all 0.2s ease",
+        "opacity": "all 0.2s ease"
+      },
     },
+    
+
   },
   plugins: [],
 };
