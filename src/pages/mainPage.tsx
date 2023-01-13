@@ -20,13 +20,13 @@ export const MainPage = () => {
   }, []);
   
   return (
-    <div >
+    <div className="flex flex-row items-center justify-center">
       {products.map((product) => (
-        <div key={product.id} className="flex justify-center m-5 p-5">
-          <Products product={product}/>
+        <div key={product.id} className=" m-5 pt-20">
+          <Products product={product} className=" w-5"/>
         </div>
       ))}
-    <ShoppingCart />
+      <ShoppingCart />
     </div>
   );
 };

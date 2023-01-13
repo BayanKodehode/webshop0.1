@@ -17,6 +17,7 @@ interface IProduct {
   username: string;
   description: string;
   price: number;
+  image:string;
 }
 
 interface ProductProps {
@@ -112,12 +113,14 @@ export const Products = (productProps: ProductProps) => {
   }, []);
 
   return (
-    <div className="bg-slate-200 rounded-lg ">
-      <div className="font-semibold p-5 text-2xl">
+    <div className="bg-slate-200 rounded-lg 
+                    hover:scale-105 transition-transform delay-150 ">
+      <div className="font-semibold p-3 text-2xl ">
         <h1> {product.name}</h1>
         <p> By: {product.username} </p>
       </div>
-      <div className="p-5 text-base">
+      <img src={product.image} alt="product image" />
+      <div className="p-5 text-md">
         <p> {product.description} </p>
       </div>
       <div className="p-5 text-xl">
@@ -125,8 +128,7 @@ export const Products = (productProps: ProductProps) => {
           {hasUserLiked ? <>&#128078;</> : <>&#128077;</>}
         </button>
         {likes && <p> Likes: {likes?.length} </p>}
-        <p>Price : {product.price}</p>
-
+        <p className="p-5 text-2xl ">Price : {product.price}</p>
         <button onClick={() => addProductToCart(product)}>Add to Cart</button>
       </div>
     </div>
