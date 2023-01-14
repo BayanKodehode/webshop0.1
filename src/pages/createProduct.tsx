@@ -45,19 +45,26 @@ export const CreateProduct = () => {
   };
 
   return (
-    <div className="flex flex-col items-center text-2xl text-white font-mono
-                    hover:scale-150 transition-transform delay-150 ">
-      <form className="fixed p-10  rounded-xl bg-gradient-to-r from-indigo-500 to-gray-300" 
+    <div className="flex flex-col items-center text-2xl font-mono 
+                    hover:scale-105 transition-transform delay-150 ">
+      <form className="fixed p-10 m-10 rounded-xl 
+                    bg-gradient-to-r from-indigo-500 to-gray-300" 
             onSubmit={handleSubmit(onCreateProduct)} >
-        <input placeholder="Name..." {...register("name")} />
+        <input  className="p-2 m-2 rounded-xl text-black" type="text"
+            placeholder="Name..." {...register("name")} />
         <p style={{ color: "red" }}> {errors.name?.message}</p>
         {/* <input placeholder="Image..." type="file" ref={register} name="image" />
         <p style={{ color: "red" }}> {errors.image?.message}</p> */}
-        <textarea placeholder="Description..." {...register("description")} />
+        <textarea className="p-2 m-2 rounded-xl text-black custom-scrollbar"
+        placeholder="Description..." {...register("description")} />
         <p style={{ color: "red" }}> {errors.description?.message}</p>
-        <input type="number" placeholder="Price..." {...register("price")} />
+        <input className="p-2 m-2 rounded-xl text-black"
+        type="number" placeholder="Price..." {...register("price")} />
         <p className="p-5" style={{ color: "red" }}> {errors.price?.message}</p>
-        <input type="submit" className="submitForm" />
+        <input className="submitForm cursor-pointer text-white p-2 rounded-xl 
+                          border-4 hover:border-slate-400 duration-1000 shadow-2xl" 
+        type="submit"  
+        value="Add new product"/>
       </form> 
     </div>
   );

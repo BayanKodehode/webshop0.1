@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Products }  from "../components/Products";
-import { ShoppingCart } from "../components/ShoppingCart";
 import { getDocs, collection } from "firebase/firestore";
 import { db } from "../config/firebase";
 
@@ -22,11 +21,10 @@ export const MainPage = () => {
   return (
     <div className="flex flex-row items-center justify-center">
       {products.map((product) => (
-        <div key={product.id} className=" m-5 pt-20">
-          <Products product={product} className=" w-5"/>
+        <div key={product.id} className="w-60 m-5 pt-20">
+          <Products product={product} />
         </div>
       ))}
-      <ShoppingCart />
     </div>
   );
 };

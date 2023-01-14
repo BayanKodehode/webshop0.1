@@ -113,23 +113,25 @@ export const Products = (productProps: ProductProps) => {
   }, []);
 
   return (
-    <div className="bg-slate-200 rounded-lg 
+    <div className="bg-slate-200 rounded-lg shadow-2xl font-display
                     hover:scale-105 transition-transform delay-150 ">
       <div className="font-semibold p-3 text-2xl ">
         <h1> {product.name}</h1>
         <p> By: {product.username} </p>
       </div>
       <img src={product.image} alt="product image" />
-      <div className="p-5 text-md">
+      <div className="p-3 text-md">
         <p> {product.description} </p>
       </div>
-      <div className="p-5 text-xl">
+      <div className="p-3 text-md">
         <button onClick={hasUserLiked ? removeLike : addLike}>
           {hasUserLiked ? <>&#128078;</> : <>&#128077;</>}
         </button>
         {likes && <p> Likes: {likes?.length} </p>}
-        <p className="p-5 text-2xl ">Price : {product.price}</p>
-        <button onClick={() => addProductToCart(product)}>Add to Cart</button>
+        Rates: <button className="text-yellow-600">&#9733;&#9733;&#9733;&#9733;&#9734;</button> 
+        <p className="p-3 text-xl">Price : {product.price}</p>
+        <button onClick={() => addProductToCart(product)}
+        className="mx-1 px-4 hover:bg-slate-400 duration-1000 border border-slate-600 rounded-full">Add to Cart</button>
       </div>
     </div>
   );

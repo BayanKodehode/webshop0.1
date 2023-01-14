@@ -15,14 +15,12 @@
     height: 100%;
   }
   .custom-scrollbar::-webkit-scrollbar {
-    position: left;
-    left: 0;
-    width: 0.4rem;
+    width: 0.8rem;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background-color: #a0aec0;
-    border-radius: 0.2rem;
+    border-radius: 0.4rem;
   }
 
 
