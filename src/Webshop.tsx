@@ -39,7 +39,7 @@ function Webshop() {
           </button>
         )}
         {isOpen && (
-          <div className="max-w-4xl font-chatFont  z-50 rounded-t-3xl bg-gradient-to-r from-indigo-600 to-gray-500 bg-white ">
+          <div className="max-w-4xl font-chatFont  z-50 rounded-t-3xl bg-gradient-to-r from-indigo-600 to-slate-400">
             <button
               className=" bg-red-700 p-2 m-4 rounded-t-2xl "
               onClick={handleClose}

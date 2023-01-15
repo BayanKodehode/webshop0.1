@@ -84,7 +84,8 @@ const onJokeRequest = async () => {
             placeholder="Hello! What's your name ?"
           />
           <button
-            className="text-white p-3 animate-pulse cursor-pointer rounded-xl bg-gradient-to-r from-gray-500 to-indigo-600"
+            className="text-white p-3 animate-pulse cursor-pointer rounded-xl 
+                        bg-gradient-to-r from-gray-500 to-indigo-600"
             type="submit"
           >
             Submit
