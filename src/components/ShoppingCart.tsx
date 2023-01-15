@@ -2,11 +2,12 @@ import React from "react";
 import { collection, query, where, doc, getDocs } from "firebase/firestore";
 import { db, auth } from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { IProduct } from "./Products";
 
 export function ShoppingCart() {
   const [user] = useAuthState(auth);
   const [showCartItems, setShowCartItems] = React.useState(false);
-  const [cart, setCart] = React.useState<[]>([]);
+  const [cart, setCart] = React.useState<IProduct[]>([]);
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
@@ -16,22 +17,27 @@ export function ShoppingCart() {
     setLoading(true);
     const cartRef = collection(db, "cart");
 
-    getDocs(cartRef)
+    getDocs(query(cartRef, where("userId", "==", user?.uid)))
       .then(async (querySnapshot) => {
-        const cart: any[] = [];
+        const cart: IProduct[] = [];
         querySnapshot.forEach(async (doc) => {
           const productsRef = collection(db, "products");
-
-          getDocs(productsRef).then((productSnapshot) => {
-            const data = doc.data();
+          getDocs(query(productsRef)).then((productSnapshot) => {
             productSnapshot.docs.forEach((productDoc) => {
-              if (productDoc.id === data.productId) {
-                cart.push({ id: doc.id, ...data, product: productDoc.data() });
+              if (productDoc.id === doc.data().productId) {
+                cart.push({
+                  id: doc.id,
+                  name: productDoc.data().name,
+                  image: productDoc.data().image,
+                  price: productDoc.data().price,
+                  username: "",
+                  description: "",
+                });
               }
             });
           });
         });
-        setCart(cart);
+        setCart(cart as IProduct[]);
       })
       .catch((error) => {
         console.log(error);
@@ -75,9 +81,9 @@ export function ShoppingCart() {
       >
         {cart.map((p) => (
           <div key={p.id} className="p-2 ">
-            <p className="text-lg text-center">Name: {p.product.name}</p>
-            <img src={p.product.image} alt="product image" />
-            <p className="text-xl text-center ">Price: {p.product.price}</p>
+            <p className="text-lg text-center">Name: {p.name}</p>
+            <img src={p.image} alt="product image" />
+            <p className="text-xl text-center ">Price: {p.price}</p>
             <div className="flex items-center justify-self-center">
               <button className="px-3 mx-1 text-lg rounded-xl bg-green-400 ">
                 Buy

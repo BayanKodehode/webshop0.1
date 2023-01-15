@@ -11,13 +11,13 @@ import {
 import { db, auth } from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-interface IProduct {
+export interface IProduct {
   id: string;
   name: string;
   username: string;
   description: string;
   price: number;
-  image:string;
+  image: string;
 }
 
 interface ProductProps {
@@ -32,7 +32,9 @@ interface Like {
 export const Products = (productProps: ProductProps) => {
   const { product } = productProps;
   const [user] = useAuthState(auth);
-  const [cart, setCartProduct] = useState<[] | null>(null);
+  const [cart, setCartProduct] = useState<
+    { userId: string; productId: string }[] | null
+  >(null);
   const cartRef = collection(db, "cart");
   const cartDoc = query(cartRef, where("productId", "==", product.id));
 
@@ -40,12 +42,12 @@ export const Products = (productProps: ProductProps) => {
     try {
       const newCartDoc = await addDoc(cartRef, {
         userId: user?.uid,
-        productId: product.id,
+        productId: product?.id,
       });
       if (user) {
         setCartProduct((prev) =>
           prev
-            ? [...prev, { userId: user.uid, productId: product.id }]
+            ? [...prev, { userId: user.uid, productId: product?.id }]
             : [{ userId: user.uid, productId: product.id }]
         );
       }
@@ -59,7 +61,8 @@ export const Products = (productProps: ProductProps) => {
 
   const likesRef = collection(db, "likes");
 
-  const likesDoc = query(likesRef, where("productId", "==", product.id));
+  const likesDoc =
+    product && query(likesRef, where("productId", "==", product?.id));
 
   const getLikes = async () => {
     const data = await getDocs(likesDoc);
@@ -71,7 +74,7 @@ export const Products = (productProps: ProductProps) => {
     try {
       const newDoc = await addDoc(likesRef, {
         userId: user?.uid,
-        productId: product.id,
+        productId: product?.id,
       });
       if (user) {
         setLikes((prev) =>
@@ -88,7 +91,7 @@ export const Products = (productProps: ProductProps) => {
     try {
       const likeToDeleteQuery = query(
         likesRef,
-        where("productId", "==", product.id),
+        product && where("productId", "==", product.id),
         where("userId", "==", user?.uid)
       );
 
@@ -113,25 +116,35 @@ export const Products = (productProps: ProductProps) => {
   }, []);
 
   return (
-    <div className="bg-slate-200 rounded-lg shadow-2xl font-display
-                    hover:scale-105 transition-transform delay-150 ">
+    <div
+      className="bg-slate-200 rounded-lg shadow-2xl font-display
+                    hover:scale-105 transition-transform delay-150 "
+    >
       <div className="font-semibold p-3 text-2xl ">
-        <h1> {product.name}</h1>
-        <p> By: {product.username} </p>
+        <h1> {product?.name}</h1>
+        <p> By: {product?.username} </p>
       </div>
-      <img src={product.image} alt="product image" />
+      <img src={product?.image} alt="product image" />
       <div className="p-3 text-md">
-        <p> {product.description} </p>
+        <p> {product?.description} </p>
       </div>
       <div className="p-3 text-md">
         <button onClick={hasUserLiked ? removeLike : addLike}>
           {hasUserLiked ? <>&#128078;</> : <>&#128077;</>}
         </button>
         {likes && <p> Likes: {likes?.length} </p>}
-        Rates: <button className="text-yellow-600">&#9733;&#9733;&#9733;&#9733;&#9734;</button> 
-        <p className="p-3 text-xl">Price : {product.price}</p>
-        <button onClick={() => addProductToCart(product)}
-        className="mx-1 px-4 hover:bg-slate-400 duration-1000 border border-slate-600 rounded-full">Add to Cart</button>
+        Rates:{" "}
+        <button className="text-yellow-600">
+          &#9733;&#9733;&#9733;&#9733;&#9734;
+        </button>
+        <p className="p-3 text-xl">Price : {product?.price}</p>
+        <button
+          className="mx-1 px-4 hover:bg-slate-400
+                          duration-1000 border border-slate-600 rounded-full"
+          onClick={() => addProductToCart()}
+        >
+          Add to Cart
+        </button>
       </div>
     </div>
   );

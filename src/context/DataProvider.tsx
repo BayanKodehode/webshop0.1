@@ -1,18 +1,15 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 
-// Create an interface for the riddle data type
 interface IRiddle {
   title: string;
   question: string;
   answer: string;
 }
 
-// Create an interface for the joke data type
 interface IJoke {
   joke: string;
 }
 
-// Create an interface for the context data type
 interface IDataContext {
   riddles: IRiddle[];
   jokes: IJoke[];
@@ -20,7 +17,6 @@ interface IDataContext {
   fetchJokes: () => Promise<void>;
 }
 
-// Create the context object with the initial data values
 export const DataContext = createContext<IDataContext>({
   riddles: [],
   jokes: [],
@@ -28,7 +24,6 @@ export const DataContext = createContext<IDataContext>({
   fetchJokes: () => Promise.resolve(),
 });
 
-// The provider component that will wrap around the entire app
 export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [riddles, setRiddles] = useState<IRiddle[]>([]);
   const [jokes, setJokes] = useState<IJoke[]>([]);
