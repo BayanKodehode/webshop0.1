@@ -10,6 +10,8 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
+import  CommentSection  from "./CommentSection";
+import Likes from './Likes';
 
 export interface IProduct {
   id: string;
@@ -18,15 +20,11 @@ export interface IProduct {
   description: string;
   price: number;
   image: string;
+  comments: string[];  
 }
 
 interface ProductProps {
   product: IProduct;
-}
-
-interface Like {
-  likeId: string;
-  userId: string;
 }
 
 export const Products = (productProps: ProductProps) => {
@@ -56,64 +54,6 @@ export const Products = (productProps: ProductProps) => {
     }
   };
 
-  // likes
-  const [likes, setLikes] = useState<Like[] | null>(null);
-
-  const likesRef = collection(db, "likes");
-
-  const likesDoc =
-    product && query(likesRef, where("productId", "==", product?.id));
-
-  const getLikes = async () => {
-    const data = await getDocs(likesDoc);
-    setLikes(
-      data.docs.map((doc) => ({ userId: doc.data().userId, likeId: doc.id }))
-    );
-  };
-  const addLike = async () => {
-    try {
-      const newDoc = await addDoc(likesRef, {
-        userId: user?.uid,
-        productId: product?.id,
-      });
-      if (user) {
-        setLikes((prev) =>
-          prev
-            ? [...prev, { userId: user.uid, likeId: newDoc.id }]
-            : [{ userId: user.uid, likeId: newDoc.id }]
-        );
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const removeLike = async () => {
-    try {
-      const likeToDeleteQuery = query(
-        likesRef,
-        product && where("productId", "==", product.id),
-        where("userId", "==", user?.uid)
-      );
-
-      const likeToDeleteData = await getDocs(likeToDeleteQuery);
-      const likeId = likeToDeleteData.docs[0].id;
-      const likeToDelete = doc(db, "likes", likeId);
-      await deleteDoc(likeToDelete);
-      if (user) {
-        setLikes(
-          (prev) => prev && prev.filter((like) => like.likeId !== likeId)
-        );
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const hasUserLiked = likes?.find((like) => like.userId === user?.uid);
-
-  React.useEffect(() => {
-    getLikes();
-  }, []);
 
   return (
     <div
@@ -124,20 +64,18 @@ export const Products = (productProps: ProductProps) => {
         <h1> {product?.name}</h1>
         <p> By: {product?.username} </p>
       </div>
-      <img src={product?.image} alt="product image" />
+      <img src={product?.image} alt={product?.name} />
       <div className="p-3 text-md">
         <p> {product?.description} </p>
       </div>
       <div className="p-3 text-md">
-        <button onClick={hasUserLiked ? removeLike : addLike}>
-          {hasUserLiked ? <>&#128078;</> : <>&#128077;</>}
-        </button>
-        {likes && <p> Likes: {likes?.length} </p>}
-        Rates:{" "}
+        <Likes product={product}/>
+        Rates:
         <button className="text-yellow-600">
           &#9733;&#9733;&#9733;&#9733;&#9734;
         </button>
         <p className="p-3 text-xl">Price : {product?.price}</p>
+        <CommentSection product={product} />
         <button
           className="mx-1 px-4 hover:bg-slate-400
                           duration-1000 border border-slate-600 rounded-full"
