@@ -47,7 +47,6 @@ const CommentSection = (props: CommentProps) => {
   };
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
-    // e.preventDefault();
    
     try {
       if (!user) return;
@@ -56,7 +55,6 @@ const CommentSection = (props: CommentProps) => {
         productId: product?.id,
         comment: newComment,
       });
-
       setComments((prev) =>
         prev
           ? [
@@ -64,20 +62,19 @@ const CommentSection = (props: CommentProps) => {
               {
                 userId: user.uid,
                 commentId: newDoc.id,
-                comment: newDoc.newComment,
+                comment: newComment,
               },
             ]
           : [
               {
                 userId: user.uid,
                 commentId: newDoc.id,
-                comment: newDoc.newComment,
+                comment: newComment,
               },
             ]
       );
-
       setNewComment("");
-
+      // e.preventDefault();
     } catch (err) {
       console.log(err);
     }
@@ -109,23 +106,23 @@ const CommentSection = (props: CommentProps) => {
     (comment) => comment.userId === user?.uid
   );
 
-//   React.useEffect(() => {
-//     getComments();
-//     // handleCommentSubmit();
-//   }, []);
+  React.useEffect(() => {
+    getComments();
+    // handleCommentSubmit();
+  }, []);
 
   return (
-    <div>
-        <form onSubmit={(e) => handleCommentSubmit(e)} className="submitForm">
-        <input
+    <div >
+      <form onSubmit={(e) => handleCommentSubmit(e)} >
+        <input className='rounded-xl'
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
         />
-        <button type="submit">Submit</button>
-      </form>
-      <button onClick={hasUserCommented ? removeComment : handleCommentSubmit}>
+        <button type="submit" onClick={hasUserCommented ? removeComment : handleCommentSubmit}>
         {hasUserCommented ? <>&#10008;</> : <>&#9997;</>}
-      </button>
+        </button>
+      </form>
+      
       <div>
         {comments &&
           comments?.map((comment, index) => <p key={index}>{comment.comment}</p>)

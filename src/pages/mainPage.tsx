@@ -27,9 +27,9 @@ export const MainPage = () => {
   }, []);
   
   return (
-    <div className="flex flex-row items-center justify-center">
+    <div className="flex flex-row flex-wrap items-center">
       {products.map((product, index) => (
-        <div key={product.id} className="w-60 m-5 pt-20">
+        <div key={product.id} className="w-80 h-70 m-5 py-5">
           <Products product={product} />
         </div>
       ))}

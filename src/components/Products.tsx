@@ -57,15 +57,15 @@ export const Products = (productProps: ProductProps) => {
 
   return (
     <div
-      className="bg-slate-200 rounded-lg shadow-2xl font-display
+      className="bg-slate-200 rounded-lg shadow-2xl font-display p-1 m-1 
                     hover:scale-105 transition-transform delay-150 "
     >
-      <div className="font-semibold p-3 text-2xl ">
+      <div className="font-semibold p-3 text-xl ">
         <h1> {product?.name}</h1>
         <p> By: {product?.username} </p>
       </div>
       <img src={product?.image} alt={product?.name} />
-      <div className="p-3 text-md">
+      <div className="p-3 m-5 max-h-20 w-fitt text-md overflow-x-auto rounded-xl custom-scrollbar">
         <p> {product?.description} </p>
       </div>
       <div className="p-3 text-md">
@@ -77,7 +77,7 @@ export const Products = (productProps: ProductProps) => {
         <p className="p-3 text-xl">Price : {product?.price}</p>
         <CommentSection product={product} />
         <button
-          className="mx-1 px-4 hover:bg-slate-400
+          className="m-1 px-3 hover:bg-slate-400
                           duration-1000 border border-slate-600 rounded-full"
           onClick={() => addProductToCart()}
         >
