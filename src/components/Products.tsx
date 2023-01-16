@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  addDoc,
-  getDocs,
-  collection,
-  query,
-  where,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
+import { addDoc, getDocs, collection, query, where, deleteDoc, doc } from "firebase/firestore";
 import { db, auth } from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import  CommentSection  from "./CommentSection";
-import Likes from './Likes';
+import CommentSection from "./CommentSection";
+import Likes from "./Likes";
 
 export interface IProduct {
   id: string;
@@ -20,7 +12,6 @@ export interface IProduct {
   description: string;
   price: number;
   image: string;
-  comments: string[];  
 }
 
 interface ProductProps {
@@ -30,9 +21,7 @@ interface ProductProps {
 export const Products = (productProps: ProductProps) => {
   const { product } = productProps;
   const [user] = useAuthState(auth);
-  const [cart, setCartProduct] = useState<
-    { userId: string; productId: string }[] | null
-  >(null);
+  const [cart, setCartProduct] = useState<{ userId: string; productId: string }[] | null>(null);
   const cartRef = collection(db, "cart");
   const cartDoc = query(cartRef, where("productId", "==", product.id));
 
@@ -54,7 +43,6 @@ export const Products = (productProps: ProductProps) => {
     }
   };
 
-
   return (
     <div
       className="bg-slate-200 rounded-lg shadow-2xl font-display p-1 m-1 
@@ -64,16 +52,17 @@ export const Products = (productProps: ProductProps) => {
         <h1> {product?.name}</h1>
         <p> By: {product?.username} </p>
       </div>
-      <img src={product?.image} alt={product?.name} />
-      <div className="p-3 m-5 max-h-20 w-fitt text-md overflow-x-auto rounded-xl custom-scrollbar">
+      <img
+        src={product?.image}
+        alt={product?.name}
+      />
+      <div className="p-2 m-2 max-h-20 w-fitt text-md overflow-x-auto rounded-xl custom-scrollbar">
         <p> {product?.description} </p>
       </div>
       <div className="p-3 text-md">
-        <Likes product={product}/>
+        <Likes product={product} />
         Rates:
-        <button className="text-yellow-600">
-          &#9733;&#9733;&#9733;&#9733;&#9734;
-        </button>
+        <button className="text-yellow-600">&#9733;&#9733;&#9733;&#9733;&#9734;</button>
         <p className="p-3 text-xl">Price : {product?.price}</p>
         <CommentSection product={product} />
         <button

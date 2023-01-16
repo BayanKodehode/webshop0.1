@@ -66,7 +66,7 @@ export function ShoppingCart() {
   return (
     <div className="p-5 m-5 text-gray-800 shopping-cart-dropdown">
       <button
-        className="p-2 text-4xl border-4 rounded-full
+        className="p-2 text-4xl border-4 rounded-full bg-gradient-to-r from-indigo-300 to-gray-300
                 hover:border-slate-400 duration-1000 shadow-2xl"
         onClick={toggleCartItems}
       >
@@ -80,14 +80,18 @@ export function ShoppingCart() {
                     } custom-scrollbar shadow-2xl`}
       >
         {cart.map((p) => (
-          <div key={p.id} className="p-2 ">
+          <div
+            key={p.id}
+            className="p-2 "
+          >
             <p className="text-lg text-center">Name: {p.name}</p>
-            <img src={p.image} alt="product image" />
+            <img
+              src={p.image}
+              alt="product image"
+            />
             <p className="text-xl text-center ">Price: {p.price}</p>
             <div className="flex items-center justify-self-center">
-              <button className="px-3 mx-1 text-lg rounded-xl bg-green-400 ">
-                Buy
-              </button>
+              <button className="px-3 mx-1 text-lg rounded-xl bg-green-400 ">Buy</button>
               <button
                 className="px-3 mx-1 text-lg border border-collapse 
                                 border-black rounded-full "
@@ -100,9 +104,7 @@ export function ShoppingCart() {
               >
                 -
               </button>
-              <button className="px-3 ml-20 text-lg rounded-xl bg-red-600">
-                Delete
-              </button>
+              <button className="px-3 ml-20 text-lg rounded-xl bg-red-600">Delete</button>
             </div>
           </div>
         ))}

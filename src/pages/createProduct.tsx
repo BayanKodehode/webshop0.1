@@ -61,10 +61,12 @@ export const CreateProduct = () => {
           {...register("name")}
         />
         <p style={{ color: "red" }}> {errors.name?.message}</p>
-        <input className="p-2 m-2 rounded-xl text-black"
-              type="file" 
-              {...register("image")}
-              name="image"/>
+        <input
+          className="p-2 m-2 rounded-xl text-black"
+          type="file"
+          {...register("image")}
+          name="image"
+        />
         <p style={{ color: "red" }}> {errors.image?.message}</p>
         <textarea
           className="p-2 m-2 rounded-xl text-black custom-scrollbar"
@@ -78,7 +80,10 @@ export const CreateProduct = () => {
           placeholder="Price..."
           {...register("price")}
         />
-        <p className="p-5" style={{ color: "red" }}>
+        <p
+          className="p-5"
+          style={{ color: "red" }}
+        >
           {errors.price?.message}
         </p>
         <input
