@@ -28,7 +28,7 @@ export function ShoppingCart() {
                 cart.push({
                   id: doc.id,
                   name: productDoc.data().name,
-                  image: productDoc.data().image,
+                  imageUrl: productDoc.data().image,
                   price: productDoc.data().price,
                   username: "",
                   description: "",
@@ -85,10 +85,8 @@ export function ShoppingCart() {
             className="p-2 "
           >
             <p className="text-lg text-center">Name: {p.name}</p>
-            <img
-              src={p.image}
-              alt="product image"
-            />
+            <img src={p.imageUrl} alt={p.name} />
+
             <p className="text-xl text-center ">Price: {p.price}</p>
             <div className="flex items-center justify-self-center">
               <button className="px-3 mx-1 text-lg rounded-xl bg-green-400 ">Buy</button>
