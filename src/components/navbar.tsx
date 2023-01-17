@@ -52,12 +52,8 @@ export const Navbar = () => {
             className="flex flex-col items-center justify-center shadow-2xl
                 bg-gradient-to-r from-indigo-500 to-gray-300 rounded-2xl"
           >
-            <img
-              src={user?.photoURL || ""}
-              width="30"
-              height="30"
-              className=" rounded-full"
-            />
+           {user?.photoURL && <img src={user.photoURL} width="30" height="30" className=" rounded-full" />}
+
             <p className="p-3 bg-gradient-to-r from-indigo-500 to-gray-300 rounded-lg">
               {user?.displayName}
             </p>

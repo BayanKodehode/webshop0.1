@@ -1,98 +1,143 @@
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { addDoc, collection } from "firebase/firestore";
-import { auth, db } from "../config/firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { addDoc, collection } from 'firebase/firestore';
+import { auth, db, storage } from '../config/firebase';
+import { ref, uploadBytes, getDownloadURL, listAll, list } from 'firebase/storage';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate } from 'react-router-dom';
+import { v4 } from 'uuid';
 
 interface CreateFormData {
-  name: string;
-  description: string;
-  image: string;
-  price: number;
+	name: string;
+	description: string;
+	productImages: FileList;
+	price: number;
 }
 
 export const CreateProduct = () => {
-  const [user] = useAuthState(auth);
-  const navigate = useNavigate();
+	const [user] = useAuthState(auth);
+	const navigate = useNavigate();
+	const [imageUpload, setImageUpload] = React.useState<File | null>(null);
+	const [imageUrls, setImageUrls] = React.useState<string[]>([]);
 
-  const schema = yup.object().shape({
-    name: yup.string().required("You must add a name to the new product."),
-    image: yup.string().required("You must add image to the new product."),
-    description: yup.string().required("You must add a description."),
-    price: yup.number().required("What is the price of the new product?"),
-  });
+	const schema = yup.object().shape({
+		name: yup.string().required('You must add a name to the new product.'),
+		productImages: yup.string().required('You must add images to the new product.'),
+		description: yup.string().required('You must add a description.'),
+		price: yup.number().required('What is the price of the new product?')
+	});
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CreateFormData>({
-    resolver: yupResolver(schema),
-  });
+	const {
+		register,
+		handleSubmit,
+		formState: { errors }
+	} = useForm<CreateFormData>({
+		resolver: yupResolver(schema)
+	});
 
-  const productsRef = collection(db, "products");
+	const productsRef = collection(db, 'products');
 
-  const onCreateProduct = async (data: CreateFormData) => {
-    await addDoc(productsRef, {
-      ...data,
-      username: user?.displayName,
-      userId: user?.uid,
-    });
+	const imagesListRef = ref(storage, 'productImages/');
 
-    navigate("/");
-  };
+	const onCreateProduct = async (data: CreateFormData) => {
+		try {
+			if (!user) {
+				console.log('user not logged in');
+				return;
+			}
+			const file = data.productImages[0];
+			if (!file) {
+				console.log('no image selected');
+				return;
+			}
+			const imageRef = ref(storage, `productImages/${file.name ?? 'defaultName' + v4()}`);
+			await uploadBytes(imageRef, file);
+			const imageUrl = await getDownloadURL(imageRef);
+			setImageUrls((prev) => [...prev, imageUrl]);
+			const productsRef = collection(db, 'products');
+			await addDoc(productsRef, {
+				name: data.name,
+				description: data.description,
+				productImages: imageUrls,
+				price: data.price,
+				username: user?.displayName,
+				userId: user?.uid
+			});
+			navigate('/');
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
-  return (
-    <div
-      className="flex flex-col items-center text-2xl font-mono 
+	const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (event.target.files) {
+			setImageUpload(event.target.files[0]);
+		}
+	};
+
+	React.useEffect(() => {
+		list(imagesListRef).then((response) => {
+			response.items.forEach((item) => {
+				getDownloadURL(item).then((url) => {
+					setImageUrls((prev) => [...prev, url]);
+				});
+			});
+		});
+	}, []);
+
+	return (
+		<div
+			className="flex flex-col items-center text-2xl font-mono 
                     hover:scale-105 transition-transform delay-150 "
-    >
-      <form
-        className="fixed p-10 m-10 rounded-xl 
+		>
+			<form
+				className="fixed p-10 m-10 rounded-xl 
                     bg-gradient-to-r from-indigo-500 to-gray-300"
-        onSubmit={handleSubmit(onCreateProduct)}
-      >
-        <input
-          className="p-2 m-2 rounded-xl text-black"
-          type="text"
-          placeholder="Name..."
-          {...register("name")}
-        />
-        <p style={{ color: "red" }}> {errors.name?.message}</p>
-        <input
-          className="p-2 m-2 rounded-xl text-black"
-          type="file"
-          {...register("image")}
-          name="image"
-        />
-        <p style={{ color: "red" }}> {errors.image?.message}</p>
-        <textarea
-          className="p-2 m-2 rounded-xl text-black custom-scrollbar"
-          placeholder="Description..."
-          {...register("description")}
-        />
-        <p style={{ color: "red" }}> {errors.description?.message}</p>
-        <input
-          className="p-2 m-2 rounded-xl text-black"
-          type="number"
-          placeholder="Price..."
-          {...register("price")}
-        />
-        <p
-          className="p-5"
-          style={{ color: "red" }}
-        >
-          {errors.price?.message}
-        </p>
-        <input
-          className="submitForm cursor-pointer text-white p-2 rounded-xl 
+				onSubmit={handleSubmit(onCreateProduct)}
+			>
+				<input
+					className="p-2 m-2 rounded-xl text-black"
+					type="text"
+					placeholder="Name..."
+					{...register('name')}
+				/>
+				<p style={{ color: 'red' }}> {errors.name?.message}</p>
+
+				<input
+					className="p-2 m-2 rounded-xl text-black"
+					type="file"
+					{...register('productImages')}
+					name="productImages"
+				/>
+
+				<p style={{ color: 'red' }}> {errors.productImages?.message}</p>
+				<textarea
+					className="p-2 m-2 rounded-xl text-black custom-scrollbar"
+					placeholder="Description..."
+					{...register('description')}
+				/>
+				<p style={{ color: 'red' }}> {errors.description?.message}</p>
+				<input
+					className="p-2 m-2 rounded-xl text-black"
+					type="number"
+					placeholder="Price..."
+					{...register('price')}
+				/>
+				<p
+					className="p-5"
+					style={{ color: 'red' }}
+				>
+					{errors.price?.message}
+				</p>
+				<input
+					className="submitForm cursor-pointer text-white p-2 rounded-xl 
                           border-4 hover:border-slate-400 duration-1000 shadow-2xl"
-          type="submit"
-          value="Add new product"
-        />
-      </form>
-    </div>
-  );
+					type="submit"
+					value="Add new product"
+				/>
+			</form>
+		</div>
+	);
 };

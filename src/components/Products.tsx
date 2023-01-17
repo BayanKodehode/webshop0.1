@@ -11,7 +11,7 @@ export interface IProduct {
   username: string;
   description: string;
   price: number;
-  imageUrl: string;
+  productImages: string;
 }
 
 interface ProductProps {
@@ -52,7 +52,7 @@ export const Products = (productProps: ProductProps) => {
         <h1> {product?.name}</h1>
         <p> By: {product?.username} </p>
       </div>
-      <img src={product.imageUrl} alt={product.name} />
+      {product?.productImages?.length > 0 && <img src={product.productImages} alt={product.name} />}
 
       <div className="p-2 m-2 max-h-20 w-fitt text-md overflow-x-auto rounded-xl custom-scrollbar">
         <p> {product?.description} </p>

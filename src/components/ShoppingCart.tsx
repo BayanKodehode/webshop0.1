@@ -16,26 +16,22 @@ export function ShoppingCart() {
     }
     setLoading(true);
     const cartRef = collection(db, "cart");
-
-    getDocs(query(cartRef, where("userId", "==", user?.uid)))
-      .then(async (querySnapshot) => {
+    const productsRef = collection(db, "products");
+    Promise.all([getDocs(query(cartRef, where("userId", "==", user?.uid))),getDocs(query(productsRef))])
+      .then(([querySnapshot, productSnapshot]) => {
         const cart: IProduct[] = [];
-        querySnapshot.forEach(async (doc) => {
-          const productsRef = collection(db, "products");
-          getDocs(query(productsRef)).then((productSnapshot) => {
-            productSnapshot.docs.forEach((productDoc) => {
-              if (productDoc.id === doc.data().productId) {
+        querySnapshot.forEach((doc) => {
+            const product = productSnapshot.docs.find(d => d.id === doc.data().productId);
+            if(product){
                 cart.push({
                   id: doc.id,
-                  name: productDoc.data().name,
-                  imageUrl: productDoc.data().image,
-                  price: productDoc.data().price,
+                  name: product.data().name,
+                  productImages: product.data().productImages,
+                  price: product.data().price,
                   username: "",
                   description: "",
                 });
-              }
-            });
-          });
+            }
         });
         setCart(cart as IProduct[]);
       })
@@ -46,6 +42,7 @@ export function ShoppingCart() {
         setLoading(false);
       });
   }, [user]);
+
 
   const toggleCartItems = () => {
     setShowCartItems(!showCartItems);
@@ -85,7 +82,7 @@ export function ShoppingCart() {
             className="p-2 "
           >
             <p className="text-lg text-center">Name: {p.name}</p>
-            <img src={p.imageUrl} alt={p.name} />
+            {p.productImages?.length > 0 && <img src={p.productImages[0]} alt={p.name} />}
 
             <p className="text-xl text-center ">Price: {p.price}</p>
             <div className="flex items-center justify-self-center">
