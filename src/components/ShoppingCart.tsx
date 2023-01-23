@@ -82,7 +82,10 @@ export function ShoppingCart() {
             className="p-2 "
           >
             <p className="text-lg text-center">Name: {p.name}</p>
-            {p.productImages?.length > 0 && <img src={p.productImages[0]} alt={p.name} />}
+            
+            {p.productImages.map((imgURL, index) => (
+                <img key={index} src={imgURL} alt={p.name}/>
+            ))}
 
             <p className="text-xl text-center ">Price: {p.price}</p>
             <div className="flex items-center justify-self-center">

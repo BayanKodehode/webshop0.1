@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Bot } from "./components/bot";
+import { Bot } from "./components/chat-bot/bot";
 import { DataProvider } from "./context/DataProvider";
 import { MainPage } from "./pages/mainPage";
 import { CreateProduct } from "./pages/createProduct";

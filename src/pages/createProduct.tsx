@@ -30,6 +30,7 @@ export const CreateProduct = () => {
 	});
 
 	const {
+		multiple,
 		register,
 		handleSubmit,
 		formState: { errors }
@@ -39,28 +40,30 @@ export const CreateProduct = () => {
 
 	const productsRef = collection(db, 'products');
 
-	const imagesListRef = ref(storage, 'productImages/');
-
 	const onCreateProduct = async (data: CreateFormData) => {
 		try {
 			if (!user) {
 				console.log('user not logged in');
 				return;
 			}
-			const file = data.productImages[0];
-			if (!file) {
-				console.log('no image selected');
-				return;
+			if (imageUpload == null) return;
+			// const imageRef = ref(storage, `productImages/${imageUpload.name + v4()}`);
+
+			for (let i = 0; i < data.productImages.length; i++) {
+				const imageRef = ref(storage, `productImages/${data.productImages[i].name + v4()}`);
+				await uploadBytes(imageRef, data.productImages[i]);
+
+				// await uploadBytes(imageRef, imageUpload);
+
+				const imageUrl = await getDownloadURL(imageRef);
+				setImageUrls((prev) => [...prev, imageUrl]);
 			}
-			const imageRef = ref(storage, `productImages/${file.name ?? 'defaultName' + v4()}`);
-			await uploadBytes(imageRef, file);
-			const imageUrl = await getDownloadURL(imageRef);
-			setImageUrls((prev) => [...prev, imageUrl]);
 			const productsRef = collection(db, 'products');
 			await addDoc(productsRef, {
 				name: data.name,
 				description: data.description,
 				productImages: imageUrls,
+				// productImages: [...imageUrls, imageUrl],
 				price: data.price,
 				username: user?.displayName,
 				userId: user?.uid
@@ -71,21 +74,6 @@ export const CreateProduct = () => {
 		}
 	};
 
-	const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (event.target.files) {
-			setImageUpload(event.target.files[0]);
-		}
-	};
-
-	React.useEffect(() => {
-		list(imagesListRef).then((response) => {
-			response.items.forEach((item) => {
-				getDownloadURL(item).then((url) => {
-					setImageUrls((prev) => [...prev, url]);
-				});
-			});
-		});
-	}, []);
 
 	return (
 		<div
@@ -104,13 +92,16 @@ export const CreateProduct = () => {
 					{...register('name')}
 				/>
 				<p style={{ color: 'red' }}> {errors.name?.message}</p>
-
+				
 				<input
-					className="p-2 m-2 rounded-xl text-black"
 					type="file"
-					{...register('productImages')}
 					name="productImages"
-				/>
+					multiple {...register('productImages')}
+					// {...register('productImages')}
+					onChange={(event) => {
+						setImageUpload(event.target.files[0]);
+					}}
+					/>
 
 				<p style={{ color: 'red' }}> {errors.productImages?.message}</p>
 				<textarea
@@ -119,7 +110,7 @@ export const CreateProduct = () => {
 					{...register('description')}
 				/>
 				<p style={{ color: 'red' }}> {errors.description?.message}</p>
-				<input
+				<input	
 					className="p-2 m-2 rounded-xl text-black"
 					type="number"
 					placeholder="Price..."

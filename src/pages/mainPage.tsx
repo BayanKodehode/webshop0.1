@@ -6,7 +6,7 @@ import { db } from '../config/firebase';
 interface Product {
 	id: string;
 	name: string;
-	productImages: string;
+	productImages: string[];
 	price: number;
 	username: string;
 	image: string;	

@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { generateResponse } from "./responseGenerator";
 import { HideShowButtons, ButtonsProps } from "./HideShowButtons";
-import { DataContext } from "..//context/DataProvider";
+import { DataContext } from "../../context/DataProvider";
 
 export const Bot = () => {
   const [conversation, setConversation] = useState<string[]>([]);
@@ -20,7 +20,6 @@ export const Bot = () => {
           . The riddle is : ${riddles[0].question}
           . The answer is :${riddles[0].answer} `
       ]);
-      console.log(riddles);
     } else {
       setConversation([
         "Sorry, but don't give up! Keep trying and maybe you'll get lucky.",
@@ -36,7 +35,6 @@ const onJokeRequest = async () => {
     await fetchJokes();
     if (jokes.length > 0) {
       setConversation([`${jokes[0].joke}`]);
-      console.log(jokes);
     } else {
       setConversation([
         "Don't worry though, just click again and maybe I'll have a joke for you next time!",

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { addDoc, getDocs, collection, query, where, deleteDoc, doc } from "firebase/firestore";
-import { db, auth } from "../config/firebase";
+import { db, auth, storage } from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import CommentSection from "./CommentSection";
 import Likes from "./Likes";
+import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
 
 export interface IProduct {
   id: string;
@@ -11,7 +12,7 @@ export interface IProduct {
   username: string;
   description: string;
   price: number;
-  productImages: string;
+  productImages: string[];
 }
 
 interface ProductProps {
@@ -24,6 +25,8 @@ export const Products = (productProps: ProductProps) => {
   const [cart, setCartProduct] = useState<{ userId: string; productId: string }[] | null>(null);
   const cartRef = collection(db, "cart");
   const cartDoc = query(cartRef, where("productId", "==", product.id));
+  
+  const [imageUrls, setImageUrls] = useState([]);
 
   const addProductToCart = async () => {
     try {
@@ -43,8 +46,20 @@ export const Products = (productProps: ProductProps) => {
     }
   };
 
+  const imagesListRef = ref(storage, "productImages/");
+  useEffect(() => {
+      listAll(imagesListRef).then((response) => {
+        response.items.forEach((item) => {
+          getDownloadURL(item).then((url) => {
+            setImageUrls((prev) => [...prev, url]);
+          });
+        });
+      });
+    }, [product.productImages]);
+
+  
   return (
-    <div
+    <div 
       className="bg-slate-200 rounded-lg shadow-2xl font-display p-1 m-1 
                     hover:scale-105 transition-transform delay-150 "
     >
@@ -52,7 +67,10 @@ export const Products = (productProps: ProductProps) => {
         <h1> {product?.name}</h1>
         <p> By: {product?.username} </p>
       </div>
-      {product?.productImages?.length > 0 && <img src={product.productImages} alt={product.name} />}
+      
+      {product.productImages.map((imgURL, index) => {
+        return <img key={index} src={imgURL} alt={product.name}/>
+      })}
 
       <div className="p-2 m-2 max-h-20 w-fitt text-md overflow-x-auto rounded-xl custom-scrollbar">
         <p> {product?.description} </p>
