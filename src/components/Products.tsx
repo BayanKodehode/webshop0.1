@@ -5,6 +5,8 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import CommentSection from "./CommentSection";
 import Likes from "./Likes";
 import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
+import { useNavigate } from "react-router-dom";
+import { cartReducer } from "./ShoppingCart";
 
 export interface IProduct {
   id: string;
@@ -13,50 +15,41 @@ export interface IProduct {
   description: string;
   price: number;
   productImages: string[];
+  quantity: number;
 }
 
 interface ProductProps {
   product: IProduct;
 }
 
-export const Products = (productProps: ProductProps) => {
-  const { product } = productProps;
+export const Products = ({ product }: ProductProps) => {
   const [user] = useAuthState(auth);
   const [cart, setCartProduct] = useState<{ userId: string; productId: string }[] | null>(null);
   const cartRef = collection(db, "cart");
   const cartDoc = query(cartRef, where("productId", "==", product.id));
-  
-  const [imageUrls, setImageUrls] = useState([]);
+  const navigate = useNavigate();
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
 
-  const addProductToCart = async () => {
-    try {
-      const newCartDoc = await addDoc(cartRef, {
-        userId: user?.uid,
-        productId: product?.id,
-      });
-      if (user) {
-        setCartProduct((prev) =>
-          prev
-            ? [...prev, { userId: user.uid, productId: product?.id }]
-            : [{ userId: user.uid, productId: product.id }]
-        );
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const detailesHandleClick = async () => {
+    navigate("/details");
   };
+
+  const addToCart = (product : IProduct) => {
+    cartReducer({ type: 'add', product });
+	};
+
 
   const imagesListRef = ref(storage, "productImages/");
   useEffect(() => {
-      listAll(imagesListRef).then((response) => {
-        response.items.forEach((item) => {
-          getDownloadURL(item).then((url) => {
-            setImageUrls((prev) => [...prev, url]);
-          });
+    listAll(imagesListRef).then((response) => {
+      response.items.forEach((item) => {
+        getDownloadURL(item).then((url) => {
+          setImageUrls((prev) => [...prev, url])
         });
       });
-    }, [product.productImages]);
-
+    });
+  }, [product]);
+  
   
   return (
     <div 
@@ -84,7 +77,7 @@ export const Products = (productProps: ProductProps) => {
         <button
           className="m-1 px-3 hover:bg-slate-400
                           duration-1000 border border-slate-600 rounded-full"
-          onClick={() => addProductToCart()}
+                          onClick={addToCart(product)}
         >
           Add to Cart
         </button>

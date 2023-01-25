@@ -30,7 +30,6 @@ export const CreateProduct = () => {
 	});
 
 	const {
-		multiple,
 		register,
 		handleSubmit,
 		formState: { errors }
@@ -46,24 +45,17 @@ export const CreateProduct = () => {
 				console.log('user not logged in');
 				return;
 			}
+			
 			if (imageUpload == null) return;
-			// const imageRef = ref(storage, `productImages/${imageUpload.name + v4()}`);
-
-			for (let i = 0; i < data.productImages.length; i++) {
-				const imageRef = ref(storage, `productImages/${data.productImages[i].name + v4()}`);
-				await uploadBytes(imageRef, data.productImages[i]);
-
-				// await uploadBytes(imageRef, imageUpload);
-
-				const imageUrl = await getDownloadURL(imageRef);
-				setImageUrls((prev) => [...prev, imageUrl]);
-			}
+			const imageRef = ref(storage, `productImages ${imageUpload.name + v4()}`);
+			await uploadBytes(imageRef, imageUpload);
+			const imageUrl = await getDownloadURL(imageRef);
+			setImageUrls((prev) => [...prev, imageUrl])
 			const productsRef = collection(db, 'products');
 			await addDoc(productsRef, {
 				name: data.name,
 				description: data.description,
-				productImages: imageUrls,
-				// productImages: [...imageUrls, imageUrl],
+				productImages: [...imageUrls, imageUrl],
 				price: data.price,
 				username: user?.displayName,
 				userId: user?.uid
@@ -95,11 +87,10 @@ export const CreateProduct = () => {
 				
 				<input
 					type="file"
-					name="productImages"
-					multiple {...register('productImages')}
-					// {...register('productImages')}
+					// name="productImages"
+					{...register('productImages')}
 					onChange={(event) => {
-						setImageUpload(event.target.files[0]);
+						if(event.target.files) setImageUpload(event.target.files[0]);
 					}}
 					/>
 

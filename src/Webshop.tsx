@@ -1,10 +1,11 @@
 import * as React from "react";
-import { Bot } from "./components/chat-bot/bot";
+import { Bot } from "./components/chat-bot/Bot";
 import { DataProvider } from "./context/DataProvider";
-import { MainPage } from "./pages/mainPage";
-import { CreateProduct } from "./pages/createProduct";
-import { Login } from "./pages/login";
-import { Navbar } from "./components/navbar";
+import { MainPage } from "./pages/MainPage";
+import { CreateProduct } from "./pages/CreateProduct";
+import { Login } from "./pages/Login";
+import { Navbar } from "./components/Navbar";
+import { DetailsPage } from "./pages/DetailsPage";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function Webshop() {
@@ -27,6 +28,7 @@ function Webshop() {
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/create" element={<CreateProduct />} />
+          <Route path="/details" element={<DetailsPage />} />
         </Routes>
       </Router>
       <div className="z-0 fixed right-1 bottom-0 text-xl px-0 rounded-t-3xl text-white bg-gradient-to-r from-indigo-600 to-gray-500">
