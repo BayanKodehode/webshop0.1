@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { auth } from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { signOut } from "firebase/auth";
-import { ShoppingCart } from "../components/ShoppingCart";
+import { Cart } from './Cart';
 
 export const Navbar = () => {
   const [user] = useAuthState(auth); // can use it later to mack profile data
@@ -15,7 +15,7 @@ export const Navbar = () => {
       className="m-5 h-20 text-white flex items-center 
                      font-display rounded-lg shadow-2xl"
     >
-      <ShoppingCart />
+      <Cart />
 
       <div className="m-auto p-auto">
         <Link

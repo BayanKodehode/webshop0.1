@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { addDoc, getDocs, collection, query, where, deleteDoc, doc } from "firebase/firestore";
-import { db, auth, storage } from "../config/firebase";
+import React from "react";
+import { auth, storage } from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import CommentSection from "./CommentSection";
 import Likes from "./Likes";
-import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
+import { ref, getDownloadURL, listAll } from 'firebase/storage';
 import { useNavigate } from "react-router-dom";
-import { cartReducer } from "./ShoppingCart";
+import { addProduct } from "./Cart";
 
 export interface IProduct {
   id: string;
@@ -24,23 +23,20 @@ interface ProductProps {
 
 export const Products = ({ product }: ProductProps) => {
   const [user] = useAuthState(auth);
-  const [cart, setCartProduct] = useState<{ userId: string; productId: string }[] | null>(null);
-  const cartRef = collection(db, "cart");
-  const cartDoc = query(cartRef, where("productId", "==", product.id));
   const navigate = useNavigate();
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [imageUrls, setImageUrls] = React.useState<string[]>([]);
+
+
+  const addToCart = (product : IProduct) => {
+    addProduct( product );
+  }
 
   const detailesHandleClick = async () => {
     navigate("/details");
   };
 
-  const addToCart = (product : IProduct) => {
-    cartReducer({ type: 'add', product });
-	};
-
-
   const imagesListRef = ref(storage, "productImages/");
-  useEffect(() => {
+  React.useEffect(() => {
     listAll(imagesListRef).then((response) => {
       response.items.forEach((item) => {
         getDownloadURL(item).then((url) => {
@@ -76,8 +72,9 @@ export const Products = ({ product }: ProductProps) => {
         <CommentSection product={product} />
         <button
           className="m-1 px-3 hover:bg-slate-400
-                          duration-1000 border border-slate-600 rounded-full"
-                          onClick={addToCart(product)}
+                    duration-1000 border border-slate-600 rounded-full"
+                    onClick={() => addToCart(product)}
+                    
         >
           Add to Cart
         </button>
