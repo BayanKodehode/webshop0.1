@@ -3,10 +3,10 @@ import { IProduct } from './Products';
 
 const cartString = localStorage.getItem('cart');
 
-let localProducts = cartString !== 'undefined' ? JSON.parse(cartString) : [];
+let localProducts = cartString ? JSON.parse(cartString) : [];
 
-export const addProduct = (product) => {
-    let existingProduct = localProducts.find(p => p.id === product.id);
+export const addProduct = (product: IProduct) => {
+	let existingProduct = localProducts.find((p: IProduct) => p.id === product.id);
     if(existingProduct) {
         existingProduct.quantity = existingProduct.quantity + 1;
     } else {
@@ -15,29 +15,37 @@ export const addProduct = (product) => {
     localStorage.setItem('cart', JSON.stringify(localProducts));
 };
 
-export const updateQuantity = (id, quantity) => {
-	localProducts = localProducts.map((product) => {
-		if (product.id === id) {
-			return { ...product, quantity };
+export const updateQuantity = (id: string, quantity: number) => {
+	localProducts = localProducts.map((product: IProduct) => {
+		if (product.id === id.toString()) {
+			return { ...product, quantity: quantity };
 		}
-		return product;
+	  
+	  return product;
 	});
 	localStorage.setItem('cart', JSON.stringify(localProducts));
-};
+  };
+  
 
-export const removeProduct = (id) => {
-	localProducts = localProducts.filter((product) => product.id !== id);
+export const removeProduct = (id : IProduct) => {
+	localProducts = localProducts.filter((product : IProduct) => product.id !== (id as any).id);
 	localStorage.setItem('cart', JSON.stringify(localProducts));
 };
 
 export function Cart() {
 	const [showCartItems, setShowCartItems] = React.useState(false);
+	
+	const [quantity, setQuantity] = React.useState(localProducts);
 
-	const handleUpdateQuantity = (id, quantity) => {
-		updateQuantity(id, quantity);
+	React.useEffect(() => {
+	setQuantity(localProducts);
+	}, [localProducts])
+
+	const handleUpdateQuantity = (id: string, quantity: number) => {
+    updateQuantity(id, quantity);
 	};
 
-	const handleRemoveProduct = (id) => {
+	const handleRemoveProduct = (id : IProduct) => {
 		removeProduct(id);
 		setShowCartItems(!showCartItems);
 	};
@@ -47,7 +55,7 @@ export function Cart() {
 	};
 	
 	React.useEffect(() => {
-		const handleClick = (event: any) => {
+		const handleClick = (event: string) => {
 			if (!event.target.closest('.shopping-cart-dropdown')) {
 				setShowCartItems(false);
 			}
@@ -79,23 +87,27 @@ export function Cart() {
 						Your cart is empty. <br /> You can try adding some stuff in here first &#128513;
 					</p>
 				) : (
-					localProducts.map((item, index) => (
+					localProducts.map((item : IProduct, index : number) => (
 						<div key={index}>
-							<p className="text-lg text-center">
-								{item.productImages.map((imgURL, index) => (
-									<img
-										className="w-1/2 p-3 rounded-3xl"
-										key={index}
-										src={imgURL}
-										alt={item.name}
-									/>
-								))}
-								{item.name} - Quantity: {item.quantity} - Price: {item.price}
-							</p>
+							<div className="flex items-center text-lg text-center">
+								<div>{item.productImages.map((imgURL : string, index : number) => (
+										<img
+											className="w-1/2 m-10 rounded-3xl"
+											key={index}
+											src={imgURL}
+											alt={item.name}
+										/>
+									))}
+								</div>
+									{item.name} - Quantity: {item.quantity} - Price: {item.price}
+							</div>
 							<button
 								className="p-2 m-2 text-4xl border-4 rounded-full text-white bg-gradient-to-r from-red-300 to-gray-300
 									  hover:border-slate-400 duration-1000 shadow-2xl"
-								onClick={() => handleRemoveProduct(item.id)}
+								onClick={() => {
+									alert('The product has been removed from the cart');
+									handleRemoveProduct({ id: item.id } as IProduct)
+								}}
 							>
 								Remove
 							</button>
@@ -112,8 +124,8 @@ export function Cart() {
 								className="p-2 m-2 w-14 rounded-full"
 								type="number"
 								value={item.quantity}
-								onChange={(event) => handleUpdateQuantity(item.id, Number(event.target.value))}
-							/>
+								onChange={(event) => handleUpdateQuantity(item.id, parseInt(event.target.value))}
+								/>
 						</div>
 					))
 				)}

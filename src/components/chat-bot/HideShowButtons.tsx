@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Bot } from "./bot";
+import { Bot } from "./Bot";
 
 export type ButtonsProps = {
   visibility: boolean;
