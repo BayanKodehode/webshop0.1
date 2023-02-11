@@ -53,7 +53,7 @@ export const Navbar = () => {
                 bg-gradient-to-r from-indigo-500 to-gray-300 rounded-2xl"
           >
            {user?.photoURL && <img src={user.photoURL} width="30" height="30" className=" rounded-full" />}
-
+           
             <p className="p-3 bg-gradient-to-r from-indigo-500 to-gray-300 rounded-lg">
               {user?.displayName}
             </p>

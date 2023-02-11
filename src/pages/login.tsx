@@ -20,7 +20,7 @@ export const Login = () => {
         <p> Sign In With Google To Continue </p>
         <button onClick={signInWithGoogle} 
                 className="loginBtn rounded-full p-5 m-5 hover:bg-slate-300">
-          Sign In With Google
+          Log In With Google
         </button>
       </div>
     </div>

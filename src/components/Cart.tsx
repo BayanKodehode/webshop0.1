@@ -7,12 +7,12 @@ let localProducts = cartString ? JSON.parse(cartString) : [];
 
 export const addProduct = (product: IProduct) => {
 	let existingProduct = localProducts.find((p: IProduct) => p.id === product.id);
-    if(existingProduct) {
-        existingProduct.quantity = existingProduct.quantity + 1;
-    } else {
-        localProducts = [...localProducts, {...product, quantity: 1}];
-    }
-    localStorage.setItem('cart', JSON.stringify(localProducts));
+	if (existingProduct) {
+		existingProduct.quantity = existingProduct.quantity + 1;
+	} else {
+		localProducts = [...localProducts, { ...product, quantity: 1 }];
+	}
+	localStorage.setItem('cart', JSON.stringify(localProducts));
 };
 
 export const updateQuantity = (id: string, quantity: number) => {
@@ -20,32 +20,31 @@ export const updateQuantity = (id: string, quantity: number) => {
 		if (product.id === id.toString()) {
 			return { ...product, quantity: quantity };
 		}
-	  
-	  return product;
+
+		return product;
 	});
 	localStorage.setItem('cart', JSON.stringify(localProducts));
-  };
-  
+};
 
-export const removeProduct = (id : IProduct) => {
-	localProducts = localProducts.filter((product : IProduct) => product.id !== (id as any).id);
+export const removeProduct = (id: IProduct) => {
+	localProducts = localProducts.filter((product: IProduct) => product.id !== (id as any).id);
 	localStorage.setItem('cart', JSON.stringify(localProducts));
 };
 
 export function Cart() {
 	const [showCartItems, setShowCartItems] = React.useState(false);
-	
+
 	const [quantity, setQuantity] = React.useState(localProducts);
 
 	React.useEffect(() => {
-	setQuantity(localProducts);
-	}, [localProducts])
+		setQuantity(localProducts);
+	}, [localProducts]);
 
 	const handleUpdateQuantity = (id: string, quantity: number) => {
-    updateQuantity(id, quantity);
+		updateQuantity(id, quantity);
 	};
 
-	const handleRemoveProduct = (id : IProduct) => {
+	const handleRemoveProduct = (id: IProduct) => {
 		removeProduct(id);
 		setShowCartItems(!showCartItems);
 	};
@@ -53,14 +52,15 @@ export function Cart() {
 	const toggleCartItems = () => {
 		setShowCartItems(!showCartItems);
 	};
-	
+
 	React.useEffect(() => {
-		const handleClick = (event: string) => {
-			if (!event.target.closest('.shopping-cart-dropdown')) {
+		const handleClick = (event: MouseEvent) => {
+			if (event.target instanceof Element && !event.target.closest('.shopping-cart-dropdown')) {
 				setShowCartItems(false);
 			}
 		};
 		document.addEventListener('click', handleClick);
+
 		return () => {
 			document.removeEventListener('click', handleClick);
 		};
@@ -87,10 +87,11 @@ export function Cart() {
 						Your cart is empty. <br /> You can try adding some stuff in here first &#128513;
 					</p>
 				) : (
-					localProducts.map((item : IProduct, index : number) => (
+					localProducts.map((item: IProduct, index: number) => (
 						<div key={index}>
 							<div className="flex items-center text-lg text-center">
-								<div>{item.productImages.map((imgURL : string, index : number) => (
+								<div>
+									{item.productImages.map((imgURL: string, index: number) => (
 										<img
 											className="w-1/2 m-10 rounded-3xl"
 											key={index}
@@ -99,14 +100,14 @@ export function Cart() {
 										/>
 									))}
 								</div>
-									{item.name} - Quantity: {item.quantity} - Price: {item.price}
+								{item.name} - Quantity: {item.quantity} - Price: {item.price}
 							</div>
 							<button
 								className="p-2 m-2 text-4xl border-4 rounded-full text-white bg-gradient-to-r from-red-300 to-gray-300
 									  hover:border-slate-400 duration-1000 shadow-2xl"
 								onClick={() => {
 									alert('The product has been removed from the cart');
-									handleRemoveProduct({ id: item.id } as IProduct)
+									handleRemoveProduct({ id: item.id } as IProduct);
 								}}
 							>
 								Remove
@@ -125,7 +126,7 @@ export function Cart() {
 								type="number"
 								value={item.quantity}
 								onChange={(event) => handleUpdateQuantity(item.id, parseInt(event.target.value))}
-								/>
+							/>
 						</div>
 					))
 				)}

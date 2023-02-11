@@ -66,7 +66,6 @@ const Likes = ({ product }: ProductProps) => {
 
 	return (
 		<div className="">
-			<p> @{product?.username} </p>
 			<button onClick={hasUserLiked ? removeLike : addLike}>
 				{hasUserLiked ? <>&#128078;</> : <>&#128077;</>}
 			</button>

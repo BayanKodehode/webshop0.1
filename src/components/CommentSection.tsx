@@ -69,9 +69,6 @@ const CommentSection = (props: CommentProps) => {
 			const commentId = comments?.find((comment) => comment.userId === user?.uid)?.commentId;
 			if (commentId) {
 				// Update existing comment
-
-				// await deleteDoc(doc(db, 'comments', commentId));
-				// setComments((prev) => prev && prev.filter((comment) => comment.commentId !== commentId));
 				await updateDoc(doc(db, 'comments', commentId), { comment: newComment });
 				setComments((prev) =>
 					prev
